@@ -6,13 +6,21 @@ All notable changes to this package will be documented here.
 
 No changes yet.
 
-## 0.3.0 - 2026-05-28
+## 0.3.1 - 2026-05-28
 
 - Hardened optional Supabase store configuration and fake-client testing.
 - Added async Postgres checkpointer helper behind the `postgres` extra.
+- Fixed the `postgres` extra to use `langgraph-checkpoint-postgres>=3,<4`,
+  preserving compatibility with current LangGraph 1.x installs.
 - Added persistence docs for Supabase table/RPC mapping and Postgres
   checkpointer setup.
 - Kept core install free of Supabase and Postgres dependencies.
+
+## 0.3.0 - 2026-05-28
+
+- TestPyPI-only release candidate for optional persistence integrations.
+- Superseded by `0.3.1` before PyPI publication because the initial
+  `postgres` extra could resolve older LangGraph dependencies.
 
 ## 0.2.0 - 2026-05-28
 
