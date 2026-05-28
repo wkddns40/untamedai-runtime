@@ -9,3 +9,4 @@ All notable changes to this package will be documented here.
 - Added public-safe chat, greeting, and emotion graph builders.
 - Added provider protocols with fake and optional OpenAI implementations.
 - Added companion store protocol with in-memory and optional Supabase adapters.
+- Added SSE adapter with graph forwarding, parsing, and optional metrics hook.
