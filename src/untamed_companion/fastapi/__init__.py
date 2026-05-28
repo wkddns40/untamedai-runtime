@@ -1,7 +1,5 @@
-"""FastAPI integration helpers.
+"""FastAPI integration helpers."""
 
-Route factory implementation is added in a later phase.
-"""
+from untamed_companion.fastapi.routes import ChatRequest, create_chat_router
 
-__all__: list[str] = []
-
+__all__ = ["ChatRequest", "create_chat_router"]

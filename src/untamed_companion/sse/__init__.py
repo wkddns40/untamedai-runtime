@@ -1,6 +1,7 @@
 """SSE event adapters and public event contracts."""
 
 from untamed_companion.sse.adapter import (
+    MetricHook,
     StreamMetrics,
     collect_sse_frames,
     count_event_types,
@@ -14,6 +15,7 @@ from untamed_companion.sse.adapter import (
 )
 
 __all__ = [
+    "MetricHook",
     "StreamMetrics",
     "collect_sse_frames",
     "count_event_types",
