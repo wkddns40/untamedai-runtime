@@ -153,6 +153,9 @@ from untamed_companion.store import SupabaseCompanionStore
 store = SupabaseCompanionStore(
     url="https://your-project.supabase.co",
     key="your-key",
+    companion_table="companions",
+    chat_table="chat_logs",
+    emotion_table="daily_emotions",
 )
 ```
 
@@ -165,6 +168,9 @@ Required store methods:
 - `search_chat`
 - `get_emotions`
 - `put_emotion`
+
+See [Persistence](PERSISTENCE.md) for Supabase table/RPC names and Postgres
+checkpointer guidance.
 
 ## Provider Implementations
 

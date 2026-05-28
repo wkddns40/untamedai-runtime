@@ -6,6 +6,14 @@ All notable changes to this package will be documented here.
 
 No changes yet.
 
+## 0.3.0 - 2026-05-28
+
+- Hardened optional Supabase store configuration and fake-client testing.
+- Added async Postgres checkpointer helper behind the `postgres` extra.
+- Added persistence docs for Supabase table/RPC mapping and Postgres
+  checkpointer setup.
+- Kept core install free of Supabase and Postgres dependencies.
+
 ## 0.2.0 - 2026-05-28
 
 - Stabilized FastAPI route factory extension points with `ChatRouterSettings`.

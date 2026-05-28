@@ -24,9 +24,17 @@ class SupabaseCompanionStore:
     companion_table: str = "Companions"
     chat_table: str = "Chat_Logs"
     emotion_table: str = "Daily_Emotions"
+    match_chat_rpc: str = "match_chat_logs_v2"
+    companion_id_column: str = "companion_id"
+    chat_order_column: str = "timestamp"
+    emotion_order_column: str = "date"
+    client: Any | None = field(default=None, repr=False)
     _client: Any = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
+        if self.client is not None:
+            self._client = self.client
+            return
         try:
             supabase_module = import_module("supabase")
         except ImportError as exc:
@@ -34,13 +42,15 @@ class SupabaseCompanionStore:
                 "SupabaseCompanionStore requires "
                 "`pip install untamedai-runtime[supabase]`."
             ) from exc
+        if not self.url or not self.key:
+            raise ValueError("url and key are required when client is not supplied")
         self._client = supabase_module.create_client(self.url, self.key)
 
     async def get_companion(self, companion_id: str) -> CompanionRecord | None:
         result = (
             self._client.table(self.companion_table)
             .select("*")
-            .eq("companion_id", companion_id)
+            .eq(self.companion_id_column, companion_id)
             .maybe_single()
             .execute()
         )
@@ -52,7 +62,7 @@ class SupabaseCompanionStore:
         values: CompanionRecord,
     ) -> CompanionRecord:
         row = dict(values)
-        row["companion_id"] = companion_id
+        row[self.companion_id_column] = companion_id
         result = (
             self._client.table(self.companion_table)
             .upsert(row)
@@ -70,8 +80,8 @@ class SupabaseCompanionStore:
         message: str,
         embedding: list[float] | None = None,
     ) -> ChatLog:
-        row: ChatLog = {
-            "companion_id": companion_id,
+        row: dict[str, object] = {
+            self.companion_id_column: companion_id,
             "sender": sender,
             "message": message,
         }
@@ -91,8 +101,8 @@ class SupabaseCompanionStore:
         result = (
             self._client.table(self.chat_table)
             .select("*")
-            .eq("companion_id", companion_id)
-            .order("timestamp", desc=True)
+            .eq(self.companion_id_column, companion_id)
+            .order(self.chat_order_column, desc=True)
             .limit(limit)
             .execute()
         )
@@ -108,7 +118,7 @@ class SupabaseCompanionStore:
         limit: int = 8,
     ) -> list[ChatLog]:
         result = self._client.rpc(
-            "match_chat_logs_v2",
+            self.match_chat_rpc,
             {
                 "query_embedding": query_embedding,
                 "target_companion_id": companion_id,
@@ -126,8 +136,8 @@ class SupabaseCompanionStore:
         result = (
             self._client.table(self.emotion_table)
             .select("*")
-            .eq("companion_id", companion_id)
-            .order("date", desc=True)
+            .eq(self.companion_id_column, companion_id)
+            .order(self.emotion_order_column, desc=True)
             .limit(limit)
             .execute()
         )
@@ -141,8 +151,8 @@ class SupabaseCompanionStore:
         values: EmotionLog,
     ) -> EmotionLog:
         row = dict(values)
-        row["companion_id"] = companion_id
-        row["date"] = date
+        row[self.companion_id_column] = companion_id
+        row[self.emotion_order_column] = date
         result = self._client.table(self.emotion_table).upsert(row).execute()
         data = result.data or [row]
         result_row = data[0] if isinstance(data, list) else data

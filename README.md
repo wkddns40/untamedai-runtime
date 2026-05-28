@@ -159,6 +159,7 @@ and in-memory state.
 - [Event Contract](docs/EVENT_CONTRACT.md)
 - [Integrations](docs/INTEGRATIONS.md)
 - [Migration Guide](docs/MIGRATION.md)
+- [Persistence](docs/PERSISTENCE.md)
 - [Public Release Audit](docs/PUBLIC_RELEASE_AUDIT.md)
 - [Release Policy](docs/RELEASE_POLICY.md)
 - [Roadmap](docs/ROADMAP.md)
