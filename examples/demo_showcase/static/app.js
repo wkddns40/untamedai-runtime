@@ -11,9 +11,26 @@ const nodes = {
   messageInput: document.querySelector("#messageInput"),
   clearEvents: document.querySelector("#clearEvents"),
   signalCanvas: document.querySelector("#signalCanvas"),
+  langButtons: document.querySelectorAll("[data-lang]"),
 };
 
 const eventCounts = new Map();
+let currentLang = "en";
+
+const scenarioText = {
+  en: {
+    hello: "hello",
+    nameAi: "your name is Luna",
+    userName: "my name is Min",
+    coffee: "coffee",
+  },
+  ko: {
+    hello: "안녕",
+    nameAi: "네 이름은 루나",
+    userName: "내 이름은 민",
+    coffee: "커피",
+  },
+};
 
 function appendMessage(text, kind = "ai") {
   const item = document.createElement("div");
@@ -118,7 +135,7 @@ async function sendChat(message, type = "chat") {
       "Content-Type": "application/json",
       "X-Chat-Canary": "graph",
     },
-    body: JSON.stringify({ message, type }),
+    body: JSON.stringify({ message, type, lang: currentLang }),
   });
 }
 
@@ -191,17 +208,30 @@ document.querySelectorAll("[data-action]").forEach((button) => {
   button.addEventListener("click", async () => {
     const action = button.dataset.action;
     if (action === "greeting") {
-      await streamRequest(`/api/chat/${companionId}/greeting?lang=en`);
+      await streamRequest(`/api/chat/${companionId}/greeting?lang=${currentLang}`);
     } else if (action === "name-ai") {
-      await sendChat("your name is Luna");
+      await sendChat(scenarioText[currentLang].nameAi);
     } else if (action === "user-name") {
-      await sendChat("my name is Min");
+      await sendChat(scenarioText[currentLang].userName);
     } else if (action === "coffee") {
-      await sendChat("coffee", "coffee_turn");
+      await sendChat(scenarioText[currentLang].coffee, "coffee_turn");
     } else if (action === "emotion") {
       await runEmotion();
     } else if (action === "reset") {
       await resetDemo();
+    }
+  });
+});
+
+nodes.langButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    currentLang = button.dataset.lang || "en";
+    document.documentElement.lang = currentLang;
+    nodes.langButtons.forEach((item) => {
+      item.classList.toggle("active", item === button);
+    });
+    if (!nodes.messageInput.value.trim()) {
+      nodes.messageInput.value = scenarioText[currentLang].hello;
     }
   });
 });

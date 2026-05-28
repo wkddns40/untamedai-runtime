@@ -24,6 +24,9 @@ class FakeLLMProvider:
         name = str(companion.get("name") or "Companion")
         user_name = state.get("user_name") or "friend"
         message = state.get("last_user_message") or ""
+        if state.get("user_lang") == "ko":
+            ko_name = "친구" if user_name == "friend" else user_name
+            return f"{name}: 들었어요, {ko_name}. 이렇게 말했어요: {message}"
         return f"{name}: I heard you, {user_name}. You said: {message}"
 
     async def generate_greeting(self, state: ChatState) -> str:
@@ -31,6 +34,8 @@ class FakeLLMProvider:
             return self.greeting_text
         companion = state.get("companion") or {}
         name = str(companion.get("name") or "Companion")
+        if state.get("user_lang") == "ko":
+            return f"{name}: 안녕하세요. 여기 함께 있을게요."
         return f"{name}: Hello. I am here with you."
 
     async def analyze_emotion(self, state: EmotionState) -> dict[str, object]:

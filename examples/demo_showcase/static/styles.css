@@ -131,6 +131,18 @@ h2 {
   gap: 8px;
 }
 
+.lang-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.lang-switch button.active {
+  background: #244a7f;
+  border-color: #244a7f;
+  color: #ffffff;
+}
+
 .composer {
   display: grid;
   grid-template-columns: 1fr auto;

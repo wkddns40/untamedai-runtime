@@ -65,6 +65,41 @@ async def test_chat_graph_emits_naming_events() -> None:
     assert result["companion"]["name"] == "Luna"
 
 
+async def test_chat_graph_detects_korean_naming_events() -> None:
+    graph = build_chat_graph(runtime=GraphRuntime())
+    result = await graph.ainvoke(
+        {
+            "companion_id": "demo",
+            "last_user_message": "네 이름은 루나",
+            "user_lang": "ko",
+            "companion": {"name": "???"},
+        }
+    )
+
+    assert [event["type"] for event in result["emit"]] == [
+        "name_reveal",
+        "stream",
+        "end",
+    ]
+    assert result["companion"]["name"] == "루나"
+    assert result["emit"][1]["content"] == "저를 루나라고 불러 주세요."
+
+
+async def test_chat_graph_detects_korean_user_name() -> None:
+    graph = build_chat_graph(runtime=GraphRuntime())
+    result = await graph.ainvoke(
+        {
+            "companion_id": "demo",
+            "last_user_message": "내 이름은 민",
+            "user_lang": "ko",
+            "companion": {"name": "루나"},
+        }
+    )
+
+    assert result["user_name"] == "민"
+    assert result["emit"][0] == {"type": "user_name_set", "content": "민"}
+
+
 async def test_chat_graph_emits_coffee_request() -> None:
     graph = build_chat_graph()
     result = await graph.ainvoke(
@@ -76,6 +111,22 @@ async def test_chat_graph_emits_coffee_request() -> None:
     )
 
     assert [event["type"] for event in result["emit"]] == ["coffee_request"]
+
+
+async def test_chat_graph_emits_korean_coffee_request() -> None:
+    graph = build_chat_graph()
+    result = await graph.ainvoke(
+        {
+            "companion_id": "demo",
+            "last_user_message": "커피",
+            "msg_type": "coffee_turn",
+            "user_lang": "ko",
+        }
+    )
+
+    assert result["emit"] == [
+        {"type": "coffee_request", "content": "따뜻한 커피 한 잔이 필요해요."}
+    ]
 
 
 async def test_chat_graph_uses_weather_provider() -> None:
@@ -98,6 +149,21 @@ async def test_greeting_graph_emits_greeting() -> None:
     result = await graph.ainvoke({"companion": {"name": "Luna"}})
 
     assert result["emit"][0]["type"] == "greeting"
+
+
+async def test_fake_llm_provider_uses_korean_language() -> None:
+    graph = build_chat_graph()
+    result = await graph.ainvoke(
+        {
+            "companion_id": "demo",
+            "last_user_message": "안녕",
+            "user_name": "민",
+            "user_lang": "ko",
+            "companion": {"name": "루나"},
+        }
+    )
+
+    assert result["emit"][0]["content"] == "루나: 들었어요, 민. 이렇게 말했어요: 안녕"
 
 
 async def test_fake_embedding_provider_is_deterministic() -> None:

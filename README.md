@@ -39,7 +39,8 @@ http://127.0.0.1:8000/demo
 ```
 
 The showcase uses the public FastAPI router, in-memory store, fake providers,
-SSE event inspector, reset endpoint, and daily emotion dry-run.
+SSE event inspector, Korean/English language toggle, reset endpoint, and daily
+emotion dry-run.
 
 ## Prompt Override
 

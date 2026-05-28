@@ -12,7 +12,10 @@ from untamed_companion.store.base import CompanionRecord
 
 _NONE_INTENT = {"intent": "none", "name": None}
 _COFFEE_TEXT = "I could use a warm cup of coffee."
+_COFFEE_TEXT_KO = "따뜻한 커피 한 잔이 필요해요."
 _NAMING_PROMPT = "I think I am ready for a name. What would you like to call me?"
+_NAMING_PROMPT_KO = "이제 이름을 가져도 될 것 같아요. 저를 뭐라고 불러 줄래요?"
+_NAME_PATTERN = r"([A-Za-z가-힣][\w가-힣\- ]{0,31}?)"
 
 
 def _clean_name(raw: str | None) -> str | None:
@@ -26,7 +29,12 @@ def _clean_name(raw: str | None) -> str | None:
 
 def _extract_user_name(message: str) -> str | None:
     patterns = (
-        r"(?:my name is|i am|i'm|call me)\s+([A-Za-z][\w\- ]{0,31})",
+        rf"(?:my name is|i am|i'm|call me)\s+{_NAME_PATTERN}$",
+        rf"(?:내 이름은|제 이름은)\s*{_NAME_PATTERN}"
+        r"(?:입니다|이에요|예요|이야|야)?$",
+        rf"(?:나는|저는|난|전)\s*{_NAME_PATTERN}"
+        r"(?:입니다|이에요|예요|이야|야)?$",
+        rf"{_NAME_PATTERN}(?:라고|이라고)\s*(?:불러|불러줘|불러 주세요|불러주세요)",
     )
     for pattern in patterns:
         match = re.search(pattern, message, re.IGNORECASE)
@@ -37,7 +45,13 @@ def _extract_user_name(message: str) -> str | None:
 
 def _extract_ai_name(message: str) -> str | None:
     patterns = (
-        r"(?:your name is|call you|i will call you)\s+([A-Za-z][\w\- ]{0,31})",
+        rf"(?:your name is|call you|i will call you)\s+{_NAME_PATTERN}$",
+        rf"(?:네 이름은|너의 이름은|니 이름은|너 이름은)\s*{_NAME_PATTERN}"
+        r"(?:입니다|이에요|예요|이야|야)?$",
+        rf"(?:널|너를|너는)\s*{_NAME_PATTERN}(?:라고|이라고)\s*"
+        r"(?:부를게|부를 거야|부르겠어|불러줄게)",
+        rf"{_NAME_PATTERN}(?:라고|이라고)\s*"
+        r"(?:부를게|부를 거야|부르겠어|불러줄게)",
     )
     for pattern in patterns:
         match = re.search(pattern, message, re.IGNORECASE)
@@ -49,6 +63,16 @@ def _extract_ai_name(message: str) -> str | None:
 def _companion_named(companion: dict[str, object]) -> bool:
     name = str(companion.get("name") or "")
     return bool(name and name != "???")
+
+
+def _is_ko(state: ChatState) -> bool:
+    return state.get("user_lang") == "ko"
+
+
+def _name_confirmation(name: str, state: ChatState) -> str:
+    if _is_ko(state):
+        return f"저를 {name}라고 불러 주세요."
+    return f"You can call me {name}."
 
 
 async def load_session(state: ChatState, runtime: GraphRuntime) -> dict[str, object]:
@@ -87,11 +111,12 @@ async def intake(_state: ChatState, _runtime: GraphRuntime) -> dict[str, object]
 
 
 async def handle_coffee_turn(
-    _state: ChatState, _runtime: GraphRuntime
+    state: ChatState, _runtime: GraphRuntime
 ) -> dict[str, object]:
     """Short-circuit coffee event."""
 
-    return {"emit": [event("coffee_request", _COFFEE_TEXT)]}
+    content = _COFFEE_TEXT_KO if _is_ko(state) else _COFFEE_TEXT
+    return {"emit": [event("coffee_request", content)]}
 
 
 async def handle_awaiting_naming(
@@ -106,7 +131,7 @@ async def handle_awaiting_naming(
         return {}
     companion = dict(state.get("companion") or {})
     companion["name"] = name
-    confirmation = f"You can call me {name}."
+    confirmation = _name_confirmation(name, state)
     return {
         "companion": companion,
         "naming_phase": "named",
@@ -158,7 +183,7 @@ async def apply_ai_name(state: ChatState, runtime: GraphRuntime) -> dict[str, ob
             companion_id,
             cast(CompanionRecord, {"name": name}),
         )
-    confirmation = f"You can call me {name}."
+    confirmation = _name_confirmation(name, state)
     return {
         "companion": companion,
         "naming_phase": "named",
@@ -298,10 +323,11 @@ async def check_naming_ceremony(
         and state.get("naming_phase") == "unnamed_idle"
         and not state.get("naming_prompted")
     ):
+        prompt = _NAMING_PROMPT_KO if _is_ko(state) else _NAMING_PROMPT
         return {
             "naming_phase": "awaiting_response",
             "naming_prompted": True,
-            "emit": [event("naming_prompt", _NAMING_PROMPT)],
+            "emit": [event("naming_prompt", prompt)],
         }
     return {}
 

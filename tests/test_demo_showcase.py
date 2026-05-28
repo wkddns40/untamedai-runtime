@@ -45,6 +45,8 @@ def test_demo_serves_static_ui() -> None:
     assert script.status_code == 200
     assert "readEventStream" in script.text
     assert 'type === "stream" || type === "end"' not in script.text
+    assert 'data-lang="ko"' in response.text
+    assert "lang: currentLang" in script.text
 
 
 def test_demo_showcase_scenario_endpoints() -> None:
@@ -93,6 +95,39 @@ def test_demo_showcase_scenario_endpoints() -> None:
     assert state["companion"]["user_name"] == "Min"
     assert state["emotions"][0]["primary_emotion"] == "calm"
     assert state["metrics"]
+
+
+def test_demo_showcase_supports_korean_scenario() -> None:
+    client = _client()
+
+    assert client.post("/api/demo/reset/demo").status_code == 200
+
+    greeting = client.get("/api/chat/demo/greeting?lang=ko")
+    greeting_events = _events(greeting.text)
+    assert greeting_events[0]["content"] == "???: 안녕하세요. 여기 함께 있을게요."
+
+    naming = client.post(
+        "/api/chat/demo/stream",
+        json={"message": "네 이름은 루나", "lang": "ko"},
+        headers={"X-Chat-Canary": "graph"},
+    )
+    assert _events(naming.text)[1]["content"] == "저를 루나라고 불러 주세요."
+
+    user_intro = client.post(
+        "/api/chat/demo/stream",
+        json={"message": "내 이름은 민", "lang": "ko"},
+        headers={"X-Chat-Canary": "graph"},
+    )
+    assert _events(user_intro.text)[0] == {"type": "user_name_set", "content": "민"}
+
+    coffee = client.post(
+        "/api/chat/demo/stream",
+        json={"message": "커피", "type": "coffee_turn", "lang": "ko"},
+        headers={"X-Chat-Canary": "graph"},
+    )
+    assert _events(coffee.text) == [
+        {"type": "coffee_request", "content": "따뜻한 커피 한 잔이 필요해요."}
+    ]
 
 
 def test_demo_reset_clears_session_state() -> None:
