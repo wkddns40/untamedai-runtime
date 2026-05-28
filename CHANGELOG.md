@@ -4,6 +4,10 @@ All notable changes to this package will be documented here.
 
 ## Unreleased
 
+No changes yet.
+
+## 0.1.0 - 2026-05-28
+
 - Created public package repository skeleton.
 - Added importable package namespace and development tool configuration.
 - Added public-safe chat, greeting, and emotion graph builders.

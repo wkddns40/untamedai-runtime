@@ -18,7 +18,7 @@ cd untamedai-runtime
 pip install -e ".[fastapi,dev]"
 ```
 
-After a package release, install from PyPI:
+When a PyPI release is published:
 
 ```bash
 pip install untamedai-runtime

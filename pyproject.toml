@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "untamedai-runtime"
-version = "0.0.0"
+version = "0.1.0"
 description = "LangGraph-based runtime for emotionally adaptive AI companions."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,7 +13,7 @@ authors = [
   { name = "Untamed AI" }
 ]
 classifiers = [
-  "Development Status :: 1 - Planning",
+  "Development Status :: 3 - Alpha",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
@@ -39,6 +39,7 @@ postgres = [
   "psycopg[binary,pool]>=3.1,<4",
 ]
 dev = [
+  "build>=1,<2",
   "fastapi>=0.115,<1",
   "httpx>=0.28,<1",
   "mypy>=1.13,<2",
@@ -55,6 +56,7 @@ include = [
   "/src",
   "/tests",
   "/examples",
+  "/docs",
   "/README.md",
   "/LICENSE",
   "/CHANGELOG.md",
