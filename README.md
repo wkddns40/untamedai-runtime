@@ -142,6 +142,7 @@ and in-memory state.
 - [Event Contract](docs/EVENT_CONTRACT.md)
 - [Integrations](docs/INTEGRATIONS.md)
 - [Migration Guide](docs/MIGRATION.md)
+- [Public Release Audit](docs/PUBLIC_RELEASE_AUDIT.md)
 
 ## Intended Scope
 

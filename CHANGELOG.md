@@ -16,3 +16,4 @@ All notable changes to this package will be documented here.
 - Added Korean demo language toggle and Korean naming/user-name detection.
 - Added public golden event contract tests and GitHub Actions CI matrix.
 - Added README quickstart and architecture, event, integration, migration docs.
+- Added public release audit notes and cleaned generated cache artifacts.
