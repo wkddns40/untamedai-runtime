@@ -46,6 +46,11 @@ def test_demo_serves_static_ui() -> None:
     assert "readEventStream" in script.text
     assert 'type === "stream" || type === "end"' not in script.text
     assert 'event.type === "end"' in script.text
+    assert "safeInspectorPayload" in script.text
+    assert "/api/demo/scenarios" in script.text
+    assert 'id="scenarioList"' in response.text
+    assert 'id="eventCountsBox"' in response.text
+    assert 'id="stateBox"' in response.text
     assert "completed${intent}" in script.text
     assert 'data-lang="ko"' in response.text
     assert "lang: currentLang" in script.text
@@ -55,6 +60,14 @@ def test_demo_showcase_scenario_endpoints() -> None:
     client = _client()
 
     assert client.post("/api/demo/reset/demo").status_code == 200
+    scenarios = client.get("/api/demo/scenarios")
+    assert scenarios.status_code == 200
+    assert [scenario["id"] for scenario in scenarios.json()] == [
+        "intro-en",
+        "intro-ko",
+        "coffee-en",
+    ]
+    assert scenarios.json()[0]["steps"][0]["action"] == "greeting"
 
     greeting = client.get("/api/chat/demo/greeting?lang=en")
     assert [event["type"] for event in _events(greeting.text)] == ["greeting"]

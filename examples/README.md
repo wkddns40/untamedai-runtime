@@ -2,6 +2,7 @@
 
 - [Demo showcase](demo_showcase/)
 - [FastAPI auth hook](fastapi_auth/)
+- [Provider and prompt override](provider_prompt_override/)
 
 ## Demo Showcase
 
@@ -18,8 +19,23 @@ Included:
 - static SSE inspector UI
 - in-memory companion store
 - deterministic fake providers
+- backend-provided scenario presets
 - reset endpoint
 - daily emotion dry-run endpoint
+
+## Provider And Prompt Override
+
+```bash
+pip install -e ".[dev]"
+python examples/provider_prompt_override/app.py
+```
+
+Included:
+
+- app-owned provider object
+- app-owned prompt provider
+- in-memory store
+- public chat graph builder
 
 ## FastAPI Auth Hook
 

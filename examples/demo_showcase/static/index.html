@@ -35,6 +35,7 @@
             <button type="button" data-action="emotion">Emotion</button>
             <button type="button" data-action="reset">Reset</button>
           </div>
+          <div id="scenarioList" class="scenario-list" aria-label="Scenarios"></div>
           <form id="messageForm" class="composer">
             <input
               id="messageInput"
@@ -58,9 +59,17 @@
           </div>
           <ol id="eventLog" class="event-log"></ol>
           <div class="panel-head">
+            <h2>Counts</h2>
+          </div>
+          <pre id="eventCountsBox" class="metrics">{}</pre>
+          <div class="panel-head">
             <h2>Metrics</h2>
           </div>
           <pre id="metricsBox" class="metrics">{}</pre>
+          <div class="panel-head">
+            <h2>State</h2>
+          </div>
+          <pre id="stateBox" class="metrics">{}</pre>
         </aside>
       </section>
     </main>

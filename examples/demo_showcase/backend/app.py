@@ -30,6 +30,40 @@ from untamed_companion.store.base import EmotionLog
 ROOT_DIR = Path(__file__).resolve().parents[1]
 STATIC_DIR = ROOT_DIR / "static"
 DEFAULT_COMPANION_ID = "demo"
+DEMO_SCENARIOS: tuple[dict[str, object], ...] = (
+    {
+        "id": "intro-en",
+        "label": "Intro EN",
+        "lang": "en",
+        "steps": [
+            {"action": "greeting"},
+            {"action": "chat", "message": "your name is Luna"},
+            {"action": "chat", "message": "my name is Min"},
+            {"action": "chat", "message": "hello"},
+            {"action": "emotion"},
+        ],
+    },
+    {
+        "id": "intro-ko",
+        "label": "Intro KO",
+        "lang": "ko",
+        "steps": [
+            {"action": "greeting"},
+            {"action": "chat", "message": "네 이름은 루나"},
+            {"action": "chat", "message": "내 이름은 민"},
+            {"action": "chat", "message": "안녕"},
+            {"action": "emotion"},
+        ],
+    },
+    {
+        "id": "coffee-en",
+        "label": "Coffee EN",
+        "lang": "en",
+        "steps": [
+            {"action": "chat", "message": "coffee", "type": "coffee_turn"},
+        ],
+    },
+)
 
 
 def _today_iso() -> str:
@@ -89,7 +123,7 @@ def create_demo_app() -> FastAPI:
         weather_provider=StaticWeatherProvider("Clear demo weather, 21C."),
         companion_store=store,
     )
-    app = FastAPI(title="Untamed Runtime Demo", version="0.0.0")
+    app = FastAPI(title="Untamed Runtime Demo", version="0.4.0")
     app.state.demo_store = store
     app.state.demo_runtime = runtime
     app.state.demo_metrics = metrics
@@ -122,6 +156,10 @@ def create_demo_app() -> FastAPI:
     @app.get("/api/demo/state/{companion_id}")
     async def demo_state(companion_id: str) -> dict[str, object]:
         return await _snapshot(store, metrics, companion_id)
+
+    @app.get("/api/demo/scenarios")
+    async def demo_scenarios() -> list[dict[str, object]]:
+        return [dict(scenario) for scenario in DEMO_SCENARIOS]
 
     @app.post("/api/demo/reset")
     async def default_reset_demo() -> dict[str, object]:

@@ -6,11 +6,14 @@ const nodes = {
   streamState: document.querySelector("#streamState"),
   chatLog: document.querySelector("#chatLog"),
   eventLog: document.querySelector("#eventLog"),
+  eventCountsBox: document.querySelector("#eventCountsBox"),
   metricsBox: document.querySelector("#metricsBox"),
+  stateBox: document.querySelector("#stateBox"),
   messageForm: document.querySelector("#messageForm"),
   messageInput: document.querySelector("#messageInput"),
   clearEvents: document.querySelector("#clearEvents"),
   signalCanvas: document.querySelector("#signalCanvas"),
+  scenarioList: document.querySelector("#scenarioList"),
   langButtons: document.querySelectorAll("[data-lang]"),
 };
 
@@ -48,15 +51,36 @@ function formatEventContent(event) {
   return event.content || "";
 }
 
+function safeInspectorPayload(event) {
+  const payload = { ...event };
+  if (event.type === "end") {
+    delete payload.content;
+    payload.status = "completed";
+  }
+  return payload;
+}
+
+function updateCountsBox() {
+  const counts = Object.fromEntries([...eventCounts.entries()].sort());
+  nodes.eventCountsBox.textContent = JSON.stringify(counts, null, 2);
+}
+
 function recordEvent(event) {
   const type = event.type || "unknown";
   eventCounts.set(type, (eventCounts.get(type) || 0) + 1);
 
   const item = document.createElement("li");
+  const details = document.createElement("details");
+  const summary = document.createElement("summary");
   const badge = document.createElement("span");
   badge.className = "event-type";
   badge.textContent = type;
-  item.append(badge, document.createTextNode(formatEventContent(event)));
+  const payload = document.createElement("pre");
+  payload.className = "event-json";
+  payload.textContent = JSON.stringify(safeInspectorPayload(event), null, 2);
+  summary.append(badge, document.createTextNode(formatEventContent(event)));
+  details.append(summary, payload);
+  item.append(details);
   nodes.eventLog.prepend(item);
 
   if (type === "stream" || type === "greeting") {
@@ -68,6 +92,7 @@ function recordEvent(event) {
   } else if (type === "user_name_set") {
     nodes.userName.textContent = event.content || "user set";
   }
+  updateCountsBox();
   drawSignal();
 }
 
@@ -82,6 +107,15 @@ async function refreshState() {
   nodes.companionName.textContent = companion.name || "???";
   nodes.userName.textContent = companion.user_name || "user unset";
   nodes.metricsBox.textContent = JSON.stringify(state.metrics || [], null, 2);
+  nodes.stateBox.textContent = JSON.stringify(
+    {
+      companion: state.companion || {},
+      history: state.history || [],
+      emotions: state.emotions || [],
+    },
+    null,
+    2,
+  );
   return state;
 }
 
@@ -167,8 +201,50 @@ async function resetDemo() {
   nodes.chatLog.replaceChildren();
   nodes.eventLog.replaceChildren();
   eventCounts.clear();
+  updateCountsBox();
   drawSignal();
   await refreshState();
+}
+
+function setLang(lang) {
+  currentLang = lang || "en";
+  document.documentElement.lang = currentLang;
+  nodes.langButtons.forEach((item) => {
+    item.classList.toggle("active", item.dataset.lang === currentLang);
+  });
+  if (!nodes.messageInput.value.trim()) {
+    nodes.messageInput.value = scenarioText[currentLang].hello;
+  }
+}
+
+async function runScenario(scenario) {
+  setLang(scenario.lang || currentLang);
+  for (const step of scenario.steps || []) {
+    if (step.action === "greeting") {
+      await streamRequest(`/api/chat/${companionId}/greeting?lang=${currentLang}`);
+    } else if (step.action === "emotion") {
+      await runEmotion();
+    } else if (step.action === "chat") {
+      await sendChat(step.message || scenarioText[currentLang].hello, step.type || "chat");
+    }
+  }
+}
+
+async function loadScenarios() {
+  const response = await fetch("/api/demo/scenarios");
+  if (!response.ok) {
+    return;
+  }
+  const scenarios = await response.json();
+  nodes.scenarioList.replaceChildren(
+    ...scenarios.map((scenario) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = scenario.label || scenario.id;
+      button.addEventListener("click", () => runScenario(scenario));
+      return button;
+    }),
+  );
 }
 
 function drawSignal() {
@@ -233,14 +309,7 @@ document.querySelectorAll("[data-action]").forEach((button) => {
 
 nodes.langButtons.forEach((button) => {
   button.addEventListener("click", () => {
-    currentLang = button.dataset.lang || "en";
-    document.documentElement.lang = currentLang;
-    nodes.langButtons.forEach((item) => {
-      item.classList.toggle("active", item === button);
-    });
-    if (!nodes.messageInput.value.trim()) {
-      nodes.messageInput.value = scenarioText[currentLang].hello;
-    }
+    setLang(button.dataset.lang || "en");
   });
 });
 
@@ -256,7 +325,12 @@ nodes.messageForm.addEventListener("submit", async (event) => {
 
 nodes.clearEvents.addEventListener("click", () => {
   nodes.eventLog.replaceChildren();
+  eventCounts.clear();
+  updateCountsBox();
+  drawSignal();
 });
 
+updateCountsBox();
 drawSignal();
 refreshState();
+loadScenarios();

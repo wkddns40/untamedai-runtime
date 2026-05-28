@@ -205,6 +205,9 @@ Provider protocols:
 - `EmbeddingProvider.embed_text(text)`
 - `WeatherProvider.get_weather(location=..., lang=...)`
 
+See `examples/provider_prompt_override` for a small consumer-owned provider
+and prompt policy example.
+
 ## Prompt Providers
 
 Use the default neutral prompts for demos and tests. Supply a custom prompt
@@ -222,3 +225,5 @@ runtime = GraphRuntime(
 
 For larger apps, implement `PromptProvider` with `build_chat_prompt`,
 `build_greeting_prompt`, and `build_emotion_prompt`.
+
+See `examples/provider_prompt_override` for a complete runnable override.

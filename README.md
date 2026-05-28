@@ -114,8 +114,8 @@ http://127.0.0.1:8000/demo
 ```
 
 The showcase uses the public FastAPI router, in-memory store, fake providers,
-SSE event inspector, Korean/English language toggle, reset endpoint, and daily
-emotion dry-run.
+scenario presets, SSE event inspector, Korean/English language toggle, reset
+endpoint, and daily emotion dry-run.
 
 ## Prompt Override
 
@@ -156,6 +156,7 @@ and in-memory state.
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
+- [Demo Showcase](docs/DEMO_SHOWCASE.md)
 - [Event Contract](docs/EVENT_CONTRACT.md)
 - [Integrations](docs/INTEGRATIONS.md)
 - [Migration Guide](docs/MIGRATION.md)
@@ -163,6 +164,7 @@ and in-memory state.
 - [Public Release Audit](docs/PUBLIC_RELEASE_AUDIT.md)
 - [Release Policy](docs/RELEASE_POLICY.md)
 - [Roadmap](docs/ROADMAP.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ## Intended Scope
 

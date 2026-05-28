@@ -6,6 +6,14 @@ All notable changes to this package will be documented here.
 
 No changes yet.
 
+## 0.4.0 - 2026-05-28
+
+- Expanded the demo showcase with backend-provided scenario presets.
+- Added event inspector counts, sanitized event payload details, and live state
+  rendering in the demo UI.
+- Added a provider/prompt override example for consumer-owned integrations.
+- Added demo showcase and troubleshooting documentation.
+
 ## 0.3.1 - 2026-05-28
 
 - Hardened optional Supabase store configuration and fake-client testing.
