@@ -6,6 +6,15 @@ All notable changes to this package will be documented here.
 
 No changes yet.
 
+## 1.0.0 - 2026-05-28
+
+- Declared the public SSE event contract stable.
+- Declared graph builders, store/provider/prompt protocols, optional extras,
+  and FastAPI route factory APIs stable.
+- Added API stability and alpha-to-1.0 upgrade documentation.
+- Updated package metadata from alpha to stable.
+- Added the missing Korean coffee demo scenario preset.
+
 ## 0.4.0 - 2026-05-28
 
 - Expanded the demo showcase with backend-provided scenario presets.

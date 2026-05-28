@@ -38,6 +38,7 @@ Current presets:
 - `intro-en`: English greeting, AI naming, user naming, chat, emotion dry-run.
 - `intro-ko`: Korean greeting, AI naming, user naming, chat, emotion dry-run.
 - `coffee-en`: coffee-turn shortcut event.
+- `coffee-ko`: Korean coffee-turn shortcut event.
 
 ## Event Inspector
 

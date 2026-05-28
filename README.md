@@ -10,10 +10,10 @@ outside this repository.
 
 ## Release Status
 
-This package is an alpha runtime. Public APIs, event payload details, and
-provider/store extension points may evolve before `1.0.0`, but published
-patch/minor releases should remain backward compatible. Pin exact versions for
-application use and follow the release policy before upgrading.
+This package is a stable `1.0` runtime. The public compatibility surface is the
+SSE event contract, graph builders, provider/store/prompt protocols, FastAPI
+route factory, and optional extras documented in this repository. Breaking
+changes require a future major version.
 
 The FastAPI router is intentionally unauthenticated by default. Production
 applications must pass `auth_hook` to `create_chat_router(...)` and enforce
@@ -156,6 +156,7 @@ and in-memory state.
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
+- [API Stability](docs/API_STABILITY.md)
 - [Demo Showcase](docs/DEMO_SHOWCASE.md)
 - [Event Contract](docs/EVENT_CONTRACT.md)
 - [Integrations](docs/INTEGRATIONS.md)
@@ -165,6 +166,7 @@ and in-memory state.
 - [Release Policy](docs/RELEASE_POLICY.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Upgrade To 1.0](docs/UPGRADE_TO_1_0.md)
 
 ## Intended Scope
 

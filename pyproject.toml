@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "untamedai-runtime"
-version = "0.4.0"
+version = "1.0.0"
 description = "LangGraph-based runtime for emotionally adaptive AI companions."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,7 +13,7 @@ authors = [
   { name = "Untamed AI" }
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",

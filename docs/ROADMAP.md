@@ -42,11 +42,11 @@ Focus: richer integration showcase and docs.
 
 Focus: stable public API.
 
-- Declare stable SSE event contract.
-- Declare stable store/provider protocols.
-- Declare stable FastAPI route factory API.
-- Publish upgrade guide from alpha versions.
-- Move breaking changes to future major versions only.
+- Stable SSE event contract declared.
+- Stable store/provider/prompt protocols declared.
+- Stable FastAPI route factory API declared.
+- Upgrade guide from alpha versions published.
+- Breaking changes move to future major versions only.
 
 ## Compatibility Rules
 

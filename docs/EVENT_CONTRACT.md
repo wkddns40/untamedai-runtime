@@ -1,8 +1,7 @@
 # Event Contract
 
-The SSE event contract is the public compatibility surface. Consumers should
-handle unknown event fields conservatively and use `type` as the primary event
-switch.
+The SSE event contract is stable as of `1.0.0`. Consumers should handle unknown
+event fields conservatively and use `type` as the primary event switch.
 
 Intentional contract changes must follow `docs/RELEASE_POLICY.md`: update this
 document, update `docs/MIGRATION.md`, update golden fixtures, and use a version

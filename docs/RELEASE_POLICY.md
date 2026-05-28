@@ -1,20 +1,19 @@
 # Release Policy
 
-This project uses semantic versioning with an alpha-stage compatibility policy.
-The public compatibility surface is the Python API, optional extras, SSE event
-contract, store/provider protocols, and FastAPI route factory.
+This project uses semantic versioning. The public compatibility surface is the
+Python API, optional extras, SSE event contract, store/provider/prompt
+protocols, and FastAPI route factory.
 
 ## Versioning
 
-Current status: alpha.
+Current status: stable since `1.0.0`.
 
 - Patch releases fix docs, packaging, tests, and backward-compatible behavior.
-- Minor releases may add public APIs or harden alpha APIs.
-- Breaking changes are not allowed in patch or minor releases, including the
-  alpha series.
+- Minor releases may add public APIs or new backward-compatible behavior.
+- Breaking changes are not allowed in patch or minor releases.
 - If a breaking change is unavoidable, first add a compatibility path, document
   the migration, and remove the old behavior only in a major release.
-- After `1.0.0`, breaking changes continue to require a major version.
+- Breaking changes require a major version.
 
 ## Public Contract
 
@@ -26,8 +25,10 @@ These surfaces are treated as public:
 - `untamed_companion.providers`
 - `untamed_companion.prompts`
 - `untamed_companion.fastapi`
+- `untamed_companion.checkpoint`
 - SSE event types and payload fields documented in `docs/EVENT_CONTRACT.md`
 - Optional extras declared in `pyproject.toml`
+- Release documentation in `docs/API_STABILITY.md`
 
 Internal implementation details may change when public behavior remains the
 same.

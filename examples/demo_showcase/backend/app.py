@@ -63,6 +63,14 @@ DEMO_SCENARIOS: tuple[dict[str, object], ...] = (
             {"action": "chat", "message": "coffee", "type": "coffee_turn"},
         ],
     },
+    {
+        "id": "coffee-ko",
+        "label": "Coffee KO",
+        "lang": "ko",
+        "steps": [
+            {"action": "chat", "message": "커피", "type": "coffee_turn"},
+        ],
+    },
 )
 
 
@@ -123,7 +131,7 @@ def create_demo_app() -> FastAPI:
         weather_provider=StaticWeatherProvider("Clear demo weather, 21C."),
         companion_store=store,
     )
-    app = FastAPI(title="Untamed Runtime Demo", version="0.4.0")
+    app = FastAPI(title="Untamed Runtime Demo", version="1.0.0")
     app.state.demo_store = store
     app.state.demo_runtime = runtime
     app.state.demo_metrics = metrics

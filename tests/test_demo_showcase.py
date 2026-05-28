@@ -66,6 +66,7 @@ def test_demo_showcase_scenario_endpoints() -> None:
         "intro-en",
         "intro-ko",
         "coffee-en",
+        "coffee-ko",
     ]
     assert scenarios.json()[0]["steps"][0]["action"] == "greeting"
 
