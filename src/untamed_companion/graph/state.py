@@ -47,7 +47,7 @@ class EmotionState(TypedDict, total=False):
     companion_id: str
     target_date: str
     logs: list[dict[str, object]]
+    system_prompt: str
     analysis: dict[str, object]
     new_summary: str
     skipped: bool
-

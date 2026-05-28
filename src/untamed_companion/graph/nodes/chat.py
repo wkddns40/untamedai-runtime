@@ -234,17 +234,11 @@ async def retrieve_memory(
     }
 
 
-async def compose_prompt(state: ChatState, _runtime: GraphRuntime) -> dict[str, object]:
+async def compose_prompt(state: ChatState, runtime: GraphRuntime) -> dict[str, object]:
     """Compose a neutral public prompt."""
 
-    companion = state.get("companion") or {}
-    name = str(companion.get("name") or "Companion")
-    user_name = state.get("user_name") or "friend"
     return {
-        "system_prompt": (
-            f"You are {name}, an emotionally adaptive AI companion. "
-            f"Speak with {user_name} in a warm, concise way."
-        )
+        "system_prompt": runtime.resolve_prompt_provider().build_chat_prompt(state)
     }
 
 

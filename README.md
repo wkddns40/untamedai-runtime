@@ -8,8 +8,8 @@ code, examples, tests, and documentation approved for public release.
 
 ## Current Status
 
-Core graph skeleton, provider interfaces, store interfaces, SSE adapters, and
-FastAPI route factory are available.
+Core graph skeleton, provider interfaces, store interfaces, prompt providers,
+SSE adapters, and FastAPI route factory are available.
 
 ## License
 
@@ -21,8 +21,20 @@ MIT.
 - naming ceremony state machine
 - SSE event adapter
 - store/provider interfaces
+- neutral prompt provider with app-owned override support
 - in-memory demo and tests
 - optional FastAPI, Supabase, and Postgres integrations
+
+## Prompt Override
+
+```python
+from untamed_companion.graph import GraphRuntime
+from untamed_companion.prompts import StaticPromptProvider
+
+runtime = GraphRuntime(
+    prompt_provider=StaticPromptProvider(chat_prompt="Your app-owned prompt.")
+)
+```
 
 ## Out of Scope
 

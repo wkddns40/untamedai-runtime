@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from untamed_companion.prompts import DefaultPromptProvider, PromptProvider
 from untamed_companion.providers.base import (
     ChatResponder,
     EmbeddingProvider,
@@ -31,6 +32,7 @@ class GraphRuntime:
     embedding_provider: EmbeddingProvider | None = None
     weather_provider: WeatherProvider | None = None
     companion_store: CompanionStore | None = None
+    prompt_provider: PromptProvider | None = None
 
     def resolve_chat_responder(self) -> ChatResponder:
         return self.chat_responder or self.llm_provider or FakeLLMProvider()
@@ -49,3 +51,6 @@ class GraphRuntime:
 
     def resolve_companion_store(self) -> CompanionStore | None:
         return self.companion_store
+
+    def resolve_prompt_provider(self) -> PromptProvider:
+        return self.prompt_provider or DefaultPromptProvider()
