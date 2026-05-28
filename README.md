@@ -76,13 +76,19 @@ print(result["emit"])
 ```python
 from fastapi import FastAPI
 
-from untamed_companion.fastapi import create_chat_router
+from untamed_companion.fastapi import ChatRouterSettings, create_chat_router
 from untamed_companion.graph import GraphRuntime
 from untamed_companion.store import InMemoryCompanionStore
 
 app = FastAPI()
 runtime = GraphRuntime(companion_store=InMemoryCompanionStore())
-app.include_router(create_chat_router(runtime=runtime, prefix="/api"))
+app.include_router(
+    create_chat_router(
+        runtime=runtime,
+        prefix="/api",
+        settings=ChatRouterSettings(history_limit_default=20, history_limit_max=50),
+    )
+)
 ```
 
 Routes:

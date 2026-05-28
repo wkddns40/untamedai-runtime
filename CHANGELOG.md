@@ -4,7 +4,17 @@ All notable changes to this package will be documented here.
 
 ## Unreleased
 
-- Added release policy and roadmap docs for post-`0.1.1` package governance.
+No changes yet.
+
+## 0.2.0 - 2026-05-28
+
+- Stabilized FastAPI route factory extension points with `ChatRouterSettings`.
+- Added custom metrics bucket resolution for FastAPI stream routes.
+- Exported FastAPI integration callback types.
+- Added auth-hook example app and expanded FastAPI integration docs.
+- Documented non-FastAPI SSE transport usage.
+- Added release policy and roadmap docs for package governance.
+- Kept existing SSE event ordering backward compatible.
 
 ## 0.1.1 - 2026-05-28
 

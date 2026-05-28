@@ -1,6 +1,7 @@
 # Examples
 
 - [Demo showcase](demo_showcase/)
+- [FastAPI auth hook](fastapi_auth/)
 
 ## Demo Showcase
 
@@ -19,3 +20,16 @@ Included:
 - deterministic fake providers
 - reset endpoint
 - daily emotion dry-run endpoint
+
+## FastAPI Auth Hook
+
+```bash
+pip install -e ".[fastapi,dev]"
+uvicorn examples.fastapi_auth.app:app --reload
+```
+
+Open `http://127.0.0.1:8000/api/chat/demo/history` with:
+
+```text
+X-Demo-Token: demo-token
+```

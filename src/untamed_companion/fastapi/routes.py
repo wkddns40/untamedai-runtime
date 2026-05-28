@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import inspect
 from collections.abc import Awaitable, Callable, Mapping
-from typing import Annotated, Any, Literal
+from dataclasses import dataclass
+from typing import Any, Literal
 
 try:
     from fastapi import APIRouter, Query, Request
@@ -26,6 +27,35 @@ from untamed_companion.sse import MetricHook, forward_graph_sse
 
 AuthHook = Callable[[Request, str], None | Awaitable[None]]
 ConfigFactory = Callable[[str], Mapping[str, object] | None]
+BucketResolver = Callable[[Request], str]
+
+_DEFAULT_SSE_HEADERS = {"Cache-Control": "no-cache", "Connection": "keep-alive"}
+
+
+@dataclass(frozen=True, slots=True)
+class ChatRouterSettings:
+    """Stable FastAPI route factory settings."""
+
+    history_limit_default: int = 30
+    history_limit_max: int = 100
+    sse_media_type: str = "text/event-stream"
+    sse_headers: Mapping[str, str] | None = None
+
+    def __post_init__(self) -> None:
+        if self.history_limit_default < 1:
+            raise ValueError("history_limit_default must be >= 1")
+        if self.history_limit_max < 1:
+            raise ValueError("history_limit_max must be >= 1")
+        if self.history_limit_default > self.history_limit_max:
+            raise ValueError("history_limit_default must be <= history_limit_max")
+
+    def resolved_sse_headers(self) -> dict[str, str]:
+        """Return a mutable copy of configured SSE headers."""
+
+        headers = dict(_DEFAULT_SSE_HEADERS)
+        if self.sse_headers is not None:
+            headers.update(self.sse_headers)
+        return headers
 
 
 class ChatRequest(BaseModel):
@@ -80,6 +110,8 @@ def create_chat_router(
     auth_hook: AuthHook | None = None,
     metric_hook: MetricHook | None = None,
     config_factory: ConfigFactory | None = None,
+    bucket_resolver: BucketResolver | None = None,
+    settings: ChatRouterSettings | None = None,
 ) -> APIRouter:
     """Create a FastAPI router exposing public companion chat endpoints.
 
@@ -93,14 +125,20 @@ def create_chat_router(
     """
 
     active_runtime = runtime or GraphRuntime()
+    active_settings = settings or ChatRouterSettings()
     router = APIRouter(prefix=prefix)
     resolve_config = config_factory or _default_config
+    resolve_bucket = bucket_resolver or _bucket_from_request
 
     @router.get("/chat/{companion_id}/history")
     async def chat_history(
         companion_id: str,
         request: Request,
-        limit: Annotated[int, Query(ge=1, le=100)] = 30,
+        limit: int = Query(
+            default=active_settings.history_limit_default,
+            ge=1,
+            le=active_settings.history_limit_max,
+        ),
     ) -> list[dict[str, object]]:
         await _authorize(auth_hook, request, companion_id)
         store = active_runtime.resolve_companion_store()
@@ -128,13 +166,13 @@ def create_chat_router(
             initial_state,
             config=resolve_config(f"greeting:{companion_id}"),
             route="/chat/greeting",
-            bucket=_bucket_from_request(request),
+            bucket=resolve_bucket(request),
             metric_hook=metric_hook,
         )
         return StreamingResponse(
             frames,
-            media_type="text/event-stream",
-            headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
+            media_type=active_settings.sse_media_type,
+            headers=active_settings.resolved_sse_headers(),
         )
 
     @router.post("/chat/{companion_id}/stream")
@@ -159,13 +197,13 @@ def create_chat_router(
             initial_state,
             config=resolve_config(companion_id),
             route="/chat/stream",
-            bucket=_bucket_from_request(request),
+            bucket=resolve_bucket(request),
             metric_hook=metric_hook,
         )
         return StreamingResponse(
             frames,
-            media_type="text/event-stream",
-            headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
+            media_type=active_settings.sse_media_type,
+            headers=active_settings.resolved_sse_headers(),
         )
 
     return router
