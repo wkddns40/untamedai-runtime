@@ -40,6 +40,14 @@ function appendMessage(text, kind = "ai") {
   nodes.chatLog.scrollTop = nodes.chatLog.scrollHeight;
 }
 
+function formatEventContent(event) {
+  if (event.type === "end") {
+    const intent = event.intent ? ` intent=${event.intent}` : "";
+    return `completed${intent}`;
+  }
+  return event.content || "";
+}
+
 function recordEvent(event) {
   const type = event.type || "unknown";
   eventCounts.set(type, (eventCounts.get(type) || 0) + 1);
@@ -48,7 +56,7 @@ function recordEvent(event) {
   const badge = document.createElement("span");
   badge.className = "event-type";
   badge.textContent = type;
-  item.append(badge, document.createTextNode(event.content || ""));
+  item.append(badge, document.createTextNode(formatEventContent(event)));
   nodes.eventLog.prepend(item);
 
   if (type === "stream" || type === "greeting") {

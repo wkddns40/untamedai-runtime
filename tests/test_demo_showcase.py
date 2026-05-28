@@ -45,6 +45,8 @@ def test_demo_serves_static_ui() -> None:
     assert script.status_code == 200
     assert "readEventStream" in script.text
     assert 'type === "stream" || type === "end"' not in script.text
+    assert 'event.type === "end"' in script.text
+    assert "completed${intent}" in script.text
     assert 'data-lang="ko"' in response.text
     assert "lang: currentLang" in script.text
 
