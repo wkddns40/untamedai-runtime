@@ -8,6 +8,8 @@ tests, and a local demo showcase. It is product-agnostic by design: application
 copy, private prompts, production deployment config, billing, and secrets stay
 outside this repository.
 
+For the hosted service, visit [untamedai.me](https://untamedai.me).
+
 ## Release Status
 
 This package is a stable `1.0` runtime. The public compatibility surface is the
