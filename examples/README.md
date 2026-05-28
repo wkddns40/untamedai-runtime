@@ -1,5 +1,7 @@
 # Examples
 
+- [Demo showcase](demo_showcase/)
+
 ## Demo Showcase
 
 ```bash

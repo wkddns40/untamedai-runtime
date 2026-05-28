@@ -1,29 +1,87 @@
 # Untamed Companion Runtime
 
-Public package skeleton for a LangGraph-based companion runtime.
+LangGraph-based runtime primitives for emotionally adaptive AI companions.
 
-This repository is intentionally separate from the private product repository.
-It starts with no private git history and should only contain reusable runtime
-code, examples, tests, and documentation approved for public release.
+This package exposes reusable graph builders, SSE event adapters, provider
+interfaces, store interfaces, prompt overrides, FastAPI routes, deterministic
+tests, and a local demo showcase. It is product-agnostic by design: application
+copy, private prompts, production deployment config, billing, and secrets stay
+outside this repository.
 
-## Current Status
+## Install
 
-Core graph skeleton, provider interfaces, store interfaces, prompt providers,
-SSE adapters, and FastAPI route factory are available.
+From source:
 
-## License
+```bash
+git clone https://github.com/wkddns40/untamedai-runtime.git
+cd untamedai-runtime
+pip install -e ".[fastapi,dev]"
+```
 
-MIT.
+After a package release, install from PyPI:
 
-## Intended Scope
+```bash
+pip install untamedai-runtime
+```
 
-- LangGraph chat graph runtime
-- naming ceremony state machine
-- SSE event adapter
-- store/provider interfaces
-- neutral prompt provider with app-owned override support
-- in-memory demo and tests
-- optional FastAPI, Supabase, and Postgres integrations
+Optional extras:
+
+```bash
+pip install "untamedai-runtime[fastapi]"
+pip install "untamedai-runtime[openai]"
+pip install "untamedai-runtime[supabase]"
+pip install "untamedai-runtime[postgres]"
+```
+
+Verify:
+
+```bash
+python -m pytest
+```
+
+## Quickstart
+
+```python
+from untamed_companion.graph import GraphRuntime, build_chat_graph
+from untamed_companion.providers import FakeLLMProvider
+
+runtime = GraphRuntime(llm_provider=FakeLLMProvider())
+graph = build_chat_graph(runtime=runtime)
+
+result = await graph.ainvoke(
+    {
+        "companion_id": "demo",
+        "last_user_message": "your name is Luna",
+        "user_lang": "en",
+        "companion": {"name": "???"},
+    }
+)
+
+print(result["emit"])
+```
+
+## FastAPI
+
+```python
+from fastapi import FastAPI
+
+from untamed_companion.fastapi import create_chat_router
+from untamed_companion.graph import GraphRuntime
+from untamed_companion.store import InMemoryCompanionStore
+
+app = FastAPI()
+runtime = GraphRuntime(companion_store=InMemoryCompanionStore())
+app.include_router(create_chat_router(runtime=runtime, prefix="/api"))
+```
+
+Routes:
+
+- `GET /api/chat/{companion_id}/history`
+- `GET /api/chat/{companion_id}/greeting`
+- `POST /api/chat/{companion_id}/stream`
+
+Auth is app-owned. Pass `auth_hook` to `create_chat_router(...)` to enforce
+ownership, sessions, API keys, or any other policy.
 
 ## Demo Showcase
 
@@ -53,11 +111,47 @@ runtime = GraphRuntime(
 )
 ```
 
-## Test Contract
+## Event Contract
 
-Golden SSE contract fixtures live under `tests/golden/fixtures`. They compare
-public event order and payloads with whitespace-tolerant diffs, using only fake
-providers and in-memory state.
+SSE frames are emitted as JSON in `data:` lines:
+
+```text
+data: {"type": "stream", "content": "Hello"}
+```
+
+Stable event types:
+
+| Type | Purpose |
+| --- | --- |
+| `stream` | Assistant text chunk or complete deterministic message. |
+| `end` | Stream completion marker. May include final `content` and `intent`. |
+| `greeting` | First greeting response. |
+| `name_reveal` | Companion name accepted. |
+| `user_name_set` | User display name accepted. |
+| `naming_prompt` | Runtime asks user to name the companion. |
+| `coffee_request` | Coffee-turn shortcut event. |
+| `error` | Stream failure frame. |
+
+Golden fixtures live under `tests/golden/fixtures`. They compare public event
+order and payloads with whitespace-tolerant diffs, using only fake providers
+and in-memory state.
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Event Contract](docs/EVENT_CONTRACT.md)
+- [Integrations](docs/INTEGRATIONS.md)
+- [Migration Guide](docs/MIGRATION.md)
+
+## Intended Scope
+
+- LangGraph chat, greeting, and daily emotion graph builders
+- naming ceremony state machine
+- SSE event adapter
+- store/provider interfaces
+- neutral prompt provider with app-owned override support
+- in-memory demo and tests
+- optional FastAPI, OpenAI, Supabase, and Postgres integrations
 
 ## Out of Scope
 
@@ -66,3 +160,7 @@ providers and in-memory state.
 - production deployment config
 - billing/webhooks
 - service role keys or project-specific environment values
+
+## License
+
+MIT.
