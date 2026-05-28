@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Untamed Runtime Demo</title>
+    <link rel="stylesheet" href="/demo/assets/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">LangGraph runtime showcase</p>
+          <h1>Untamed Runtime Demo</h1>
+        </div>
+        <div class="status-strip" aria-live="polite">
+          <span id="companionName">???</span>
+          <span id="userName">user unset</span>
+          <span id="streamState">idle</span>
+        </div>
+      </header>
+
+      <section class="workspace" aria-label="Demo workspace">
+        <aside class="rail" aria-label="Scenario controls">
+          <canvas id="signalCanvas" width="320" height="180"></canvas>
+          <div class="button-grid">
+            <button type="button" data-action="greeting">Greeting</button>
+            <button type="button" data-action="name-ai">Name AI</button>
+            <button type="button" data-action="user-name">User Name</button>
+            <button type="button" data-action="coffee">Coffee</button>
+            <button type="button" data-action="emotion">Emotion</button>
+            <button type="button" data-action="reset">Reset</button>
+          </div>
+          <form id="messageForm" class="composer">
+            <input
+              id="messageInput"
+              name="message"
+              autocomplete="off"
+              value="hello"
+              aria-label="Message"
+            />
+            <button type="submit">Send</button>
+          </form>
+        </aside>
+
+        <section class="conversation" aria-label="Conversation">
+          <div id="chatLog" class="chat-log" aria-live="polite"></div>
+        </section>
+
+        <aside class="inspector" aria-label="Event inspector">
+          <div class="panel-head">
+            <h2>Events</h2>
+            <button type="button" id="clearEvents">Clear</button>
+          </div>
+          <ol id="eventLog" class="event-log"></ol>
+          <div class="panel-head">
+            <h2>Metrics</h2>
+          </div>
+          <pre id="metricsBox" class="metrics">{}</pre>
+        </aside>
+      </section>
+    </main>
+    <script src="/demo/assets/app.js" type="module"></script>
+  </body>
+</html>

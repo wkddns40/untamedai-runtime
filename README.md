@@ -25,6 +25,22 @@ MIT.
 - in-memory demo and tests
 - optional FastAPI, Supabase, and Postgres integrations
 
+## Demo Showcase
+
+```bash
+pip install -e ".[fastapi,dev]"
+python examples/demo_showcase/backend/app.py
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000/demo
+```
+
+The showcase uses the public FastAPI router, in-memory store, fake providers,
+SSE event inspector, reset endpoint, and daily emotion dry-run.
+
 ## Prompt Override
 
 ```python

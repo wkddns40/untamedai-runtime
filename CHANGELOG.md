@@ -12,3 +12,4 @@ All notable changes to this package will be documented here.
 - Added SSE adapter with graph forwarding, parsing, and optional metrics hook.
 - Added FastAPI chat router factory for history, greeting, and stream routes.
 - Added neutral prompt provider interface with static override support.
+- Added demo showcase app with static SSE inspector and reset/emotion endpoints.

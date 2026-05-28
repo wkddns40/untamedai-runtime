@@ -1,0 +1,292 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #f7f8fa;
+  color: #18212f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 1px solid #cfd7e2;
+  background: #ffffff;
+  color: #18212f;
+  border-radius: 6px;
+  min-height: 40px;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #edf3ff;
+  border-color: #8db3f3;
+}
+
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #dde3ec;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: #637083;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 15px;
+}
+
+.status-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.status-strip span {
+  border: 1px solid #d7dee8;
+  background: #f4f6f9;
+  border-radius: 6px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 13px;
+  color: #354153;
+}
+
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) minmax(320px, 1fr) minmax(260px, 360px);
+  gap: 18px;
+  padding: 18px;
+}
+
+.rail,
+.conversation,
+.inspector {
+  min-width: 0;
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#signalCanvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 1px solid #d7dee8;
+  border-radius: 8px;
+  background: #111827;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.composer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.composer input {
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid #cfd7e2;
+  border-radius: 6px;
+  padding: 0 12px;
+  background: #ffffff;
+}
+
+.conversation {
+  background: #ffffff;
+  border: 1px solid #dde3ec;
+  border-radius: 8px;
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.chat-log {
+  height: 100%;
+  min-height: 420px;
+  max-height: calc(100vh - 150px);
+  overflow: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  max-width: 78%;
+  border-radius: 8px;
+  padding: 10px 12px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: #244a7f;
+  color: #ffffff;
+}
+
+.message.ai,
+.message.event {
+  align-self: flex-start;
+  background: #eef2f7;
+  color: #18212f;
+}
+
+.message.event {
+  border: 1px dashed #a9b6c8;
+}
+
+.inspector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+}
+
+.event-log,
+.metrics {
+  margin: 0;
+  border: 1px solid #dde3ec;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+.event-log {
+  flex: 1;
+  min-height: 260px;
+  max-height: calc(100vh - 326px);
+  overflow: auto;
+  padding: 10px 10px 10px 34px;
+}
+
+.event-log li {
+  padding: 8px 0;
+  border-bottom: 1px solid #edf0f4;
+  word-break: break-word;
+}
+
+.event-log li:last-child {
+  border-bottom: 0;
+}
+
+.event-type {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  border-radius: 6px;
+  background: #e7f0ff;
+  color: #244a7f;
+  padding: 0 8px;
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.metrics {
+  min-height: 120px;
+  max-height: 220px;
+  overflow: auto;
+  padding: 12px;
+  white-space: pre-wrap;
+  font-size: 12px;
+  color: #354153;
+}
+
+@media (max-width: 960px) {
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .status-strip {
+    justify-content: flex-start;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-log,
+  .conversation {
+    min-height: 360px;
+  }
+
+  .event-log {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar,
+  .workspace {
+    padding: 14px;
+  }
+
+  .button-grid,
+  .composer {
+    grid-template-columns: 1fr;
+  }
+
+  .message {
+    max-width: 100%;
+  }
+}
