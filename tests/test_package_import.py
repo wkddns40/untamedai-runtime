@@ -5,6 +5,12 @@ from untamed_companion.graph import (
     build_emotion_graph,
     build_greeting_graph,
 )
+from untamed_companion.providers import (
+    FakeEmbeddingProvider,
+    FakeLLMProvider,
+    FakeWeatherProvider,
+    OpenAIProvider,
+)
 
 
 def test_package_imports() -> None:
@@ -24,6 +30,21 @@ async def test_chat_graph_emits_chat_response() -> None:
 
     assert [event["type"] for event in result["emit"]] == ["stream", "end"]
     assert result["emit"][-1]["intent"] == "chat"
+
+
+async def test_chat_graph_uses_llm_provider() -> None:
+    graph = build_chat_graph(
+        runtime=GraphRuntime(llm_provider=FakeLLMProvider(chat_text="custom"))
+    )
+    result = await graph.ainvoke(
+        {
+            "companion_id": "demo",
+            "last_user_message": "hello",
+            "companion": {"name": "Luna"},
+        }
+    )
+
+    assert result["emit"][0]["content"] == "custom"
 
 
 async def test_chat_graph_emits_naming_events() -> None:
@@ -57,6 +78,21 @@ async def test_chat_graph_emits_coffee_request() -> None:
     assert [event["type"] for event in result["emit"]] == ["coffee_request"]
 
 
+async def test_chat_graph_uses_weather_provider() -> None:
+    graph = build_chat_graph(
+        runtime=GraphRuntime(weather_provider=FakeWeatherProvider("Clear, 21C"))
+    )
+    result = await graph.ainvoke(
+        {
+            "companion_id": "demo",
+            "last_user_message": "hello",
+            "companion": {"name": "Luna"},
+        }
+    )
+
+    assert result["weather_info"] == "Clear, 21C"
+
+
 async def test_greeting_graph_emits_greeting() -> None:
     graph = build_greeting_graph()
     result = await graph.ainvoke({"companion": {"name": "Luna"}})
@@ -64,8 +100,21 @@ async def test_greeting_graph_emits_greeting() -> None:
     assert result["emit"][0]["type"] == "greeting"
 
 
+async def test_fake_embedding_provider_is_deterministic() -> None:
+    provider = FakeEmbeddingProvider(dimensions=4)
+    first = await provider.embed_text("hello")
+    second = await provider.embed_text("hello")
+
+    assert first == second
+    assert len(first) == 4
+
+
 async def test_emotion_graph_skips_empty_logs() -> None:
     graph = build_emotion_graph()
     result = await graph.ainvoke({"companion_id": "demo", "logs": []})
 
     assert result["skipped"] is True
+
+
+def test_openai_provider_imports_without_openai_dependency() -> None:
+    assert OpenAIProvider.__name__ == "OpenAIProvider"

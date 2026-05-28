@@ -168,15 +168,20 @@ async def apply_user_name(
 
 
 async def retrieve_memory(
-    _state: ChatState, _runtime: GraphRuntime
+    state: ChatState, runtime: GraphRuntime
 ) -> dict[str, object]:
     """Public placeholder for memory retrieval."""
 
+    lang = state.get("user_lang", "en") or "en"
+    weather_info = await runtime.resolve_weather_provider().get_weather(
+        location="Seoul",
+        lang=lang,
+    )
     return {
         "semantic_logs": [],
         "recent_logs": [],
         "emotions": [],
-        "weather_info": "",
+        "weather_info": weather_info,
     }
 
 
