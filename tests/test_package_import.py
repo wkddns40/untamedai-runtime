@@ -14,7 +14,7 @@ from untamed_companion.providers import (
 
 
 def test_package_imports() -> None:
-    assert __version__ == "0.1.0"
+    assert __version__ == "0.1.1"
 
 
 async def test_chat_graph_emits_chat_response() -> None:

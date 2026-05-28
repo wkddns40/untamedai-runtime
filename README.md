@@ -8,6 +8,16 @@ tests, and a local demo showcase. It is product-agnostic by design: application
 copy, private prompts, production deployment config, billing, and secrets stay
 outside this repository.
 
+## Release Status
+
+This package is an alpha runtime. Public APIs, event payload details, and
+provider/store extension points may change before `1.0.0`. Pin exact versions
+for application use.
+
+The FastAPI router is intentionally unauthenticated by default. Production
+applications must pass `auth_hook` to `create_chat_router(...)` and enforce
+their own ownership, session, API key, or tenant policy.
+
 ## Install
 
 From source:
@@ -18,7 +28,7 @@ cd untamedai-runtime
 pip install -e ".[fastapi,dev]"
 ```
 
-When a PyPI release is published:
+From PyPI:
 
 ```bash
 pip install untamedai-runtime

@@ -6,6 +6,13 @@ All notable changes to this package will be documented here.
 
 No changes yet.
 
+## 0.1.1 - 2026-05-28
+
+- Added GitHub Actions Trusted Publishing workflow for TestPyPI and PyPI.
+- Added GitHub environment gate guidance for PyPI release approval.
+- Clarified alpha API stability and production authentication responsibility.
+- Prepared PyPI alpha release from a matching source tag and artifact set.
+
 ## 0.1.0 - 2026-05-28
 
 - Created public package repository skeleton.
