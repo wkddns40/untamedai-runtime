@@ -8,7 +8,8 @@ code, examples, tests, and documentation approved for public release.
 
 ## Current Status
 
-Package skeleton only. Runtime implementation begins in the next phase.
+Core graph skeleton is available. Provider, store, SSE, and FastAPI
+integrations are still being migrated.
 
 ## License
 

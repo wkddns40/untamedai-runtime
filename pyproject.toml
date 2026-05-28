@@ -19,7 +19,9 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
 ]
-dependencies = []
+dependencies = [
+  "langgraph>=0.6,<2",
+]
 
 [project.optional-dependencies]
 fastapi = [
