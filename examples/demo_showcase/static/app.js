@@ -34,7 +34,7 @@ function recordEvent(event) {
   item.append(badge, document.createTextNode(event.content || ""));
   nodes.eventLog.prepend(item);
 
-  if (type === "stream" || type === "end" || type === "greeting") {
+  if (type === "stream" || type === "greeting") {
     appendMessage(event.content, "ai");
   } else if (type === "coffee_request") {
     appendMessage(event.content, "event");

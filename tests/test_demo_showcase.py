@@ -44,6 +44,7 @@ def test_demo_serves_static_ui() -> None:
     assert "Untamed Runtime Demo" in response.text
     assert script.status_code == 200
     assert "readEventStream" in script.text
+    assert 'type === "stream" || type === "end"' not in script.text
 
 
 def test_demo_showcase_scenario_endpoints() -> None:
