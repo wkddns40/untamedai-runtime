@@ -10,6 +10,10 @@ code, examples, tests, and documentation approved for public release.
 
 Planning skeleton only. Package implementation begins in the next phase.
 
+## License
+
+MIT.
+
 ## Intended Scope
 
 - LangGraph chat graph runtime
@@ -26,4 +30,3 @@ Planning skeleton only. Package implementation begins in the next phase.
 - production deployment config
 - billing/webhooks
 - service role keys or project-specific environment values
-
