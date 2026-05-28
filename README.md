@@ -8,7 +8,7 @@ code, examples, tests, and documentation approved for public release.
 
 ## Current Status
 
-Planning skeleton only. Package implementation begins in the next phase.
+Package skeleton only. Runtime implementation begins in the next phase.
 
 ## License
 
