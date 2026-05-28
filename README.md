@@ -11,8 +11,9 @@ outside this repository.
 ## Release Status
 
 This package is an alpha runtime. Public APIs, event payload details, and
-provider/store extension points may change before `1.0.0`. Pin exact versions
-for application use.
+provider/store extension points may evolve before `1.0.0`, but published
+patch/minor releases should remain backward compatible. Pin exact versions for
+application use and follow the release policy before upgrading.
 
 The FastAPI router is intentionally unauthenticated by default. Production
 applications must pass `auth_hook` to `create_chat_router(...)` and enforce
@@ -153,6 +154,8 @@ and in-memory state.
 - [Integrations](docs/INTEGRATIONS.md)
 - [Migration Guide](docs/MIGRATION.md)
 - [Public Release Audit](docs/PUBLIC_RELEASE_AUDIT.md)
+- [Release Policy](docs/RELEASE_POLICY.md)
+- [Roadmap](docs/ROADMAP.md)
 
 ## Intended Scope
 

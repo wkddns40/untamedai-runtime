@@ -4,7 +4,7 @@ All notable changes to this package will be documented here.
 
 ## Unreleased
 
-No changes yet.
+- Added release policy and roadmap docs for post-`0.1.1` package governance.
 
 ## 0.1.1 - 2026-05-28
 

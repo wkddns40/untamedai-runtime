@@ -89,6 +89,9 @@ python -m pytest tests/golden
 When event behavior changes intentionally, update the matching fixture and
 document the contract change.
 
+Event contract changes must also follow `docs/RELEASE_POLICY.md`. Patch and
+minor releases must keep existing documented events backward compatible.
+
 ## Compatibility Notes
 
 - `stream -> end` is the regular chat sequence.
