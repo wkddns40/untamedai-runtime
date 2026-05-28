@@ -1,0 +1,11 @@
+[
+  {
+    "type": "stream",
+    "content": "Luna: I heard you, Min. You said: hello"
+  },
+  {
+    "type": "end",
+    "content": "Luna: I heard you, Min. You said: hello",
+    "intent": "chat"
+  }
+]

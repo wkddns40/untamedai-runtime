@@ -1,0 +1,15 @@
+[
+  {
+    "type": "user_name_set",
+    "content": "Min"
+  },
+  {
+    "type": "stream",
+    "content": "Luna: I heard you, Min. You said: my name is Min"
+  },
+  {
+    "type": "end",
+    "content": "Luna: I heard you, Min. You said: my name is Min",
+    "intent": "chat"
+  }
+]

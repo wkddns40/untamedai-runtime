@@ -53,6 +53,12 @@ runtime = GraphRuntime(
 )
 ```
 
+## Test Contract
+
+Golden SSE contract fixtures live under `tests/golden/fixtures`. They compare
+public event order and payloads with whitespace-tolerant diffs, using only fake
+providers and in-memory state.
+
 ## Out of Scope
 
 - product frontend

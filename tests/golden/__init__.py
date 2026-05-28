@@ -1,0 +1,1 @@
+"""Golden event-contract tests."""

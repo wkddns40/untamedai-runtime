@@ -1,0 +1,15 @@
+[
+  {
+    "type": "name_reveal",
+    "content": "Luna"
+  },
+  {
+    "type": "stream",
+    "content": "You can call me Luna."
+  },
+  {
+    "type": "end",
+    "content": "You can call me Luna.",
+    "intent": "naming"
+  }
+]

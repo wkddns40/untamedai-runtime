@@ -1,0 +1,15 @@
+[
+  {
+    "type": "user_name_set",
+    "content": "민"
+  },
+  {
+    "type": "stream",
+    "content": "루나: 들었어요, 민. 이렇게 말했어요: 내 이름은 민"
+  },
+  {
+    "type": "end",
+    "content": "루나: 들었어요, 민. 이렇게 말했어요: 내 이름은 민",
+    "intent": "chat"
+  }
+]

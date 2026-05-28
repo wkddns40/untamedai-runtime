@@ -14,3 +14,4 @@ All notable changes to this package will be documented here.
 - Added neutral prompt provider interface with static override support.
 - Added demo showcase app with static SSE inspector and reset/emotion endpoints.
 - Added Korean demo language toggle and Korean naming/user-name detection.
+- Added public golden event contract tests and GitHub Actions CI matrix.

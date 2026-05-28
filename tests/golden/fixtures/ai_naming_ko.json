@@ -1,0 +1,15 @@
+[
+  {
+    "type": "name_reveal",
+    "content": "루나"
+  },
+  {
+    "type": "stream",
+    "content": "저를 루나라고 불러 주세요."
+  },
+  {
+    "type": "end",
+    "content": "저를 루나라고 불러 주세요.",
+    "intent": "naming"
+  }
+]
