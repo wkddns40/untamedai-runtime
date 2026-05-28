@@ -8,8 +8,8 @@ code, examples, tests, and documentation approved for public release.
 
 ## Current Status
 
-Core graph skeleton and provider interfaces are available. Store, SSE, and
-FastAPI integrations are still being migrated.
+Core graph skeleton, provider interfaces, and store interfaces are available.
+SSE and FastAPI integrations are still being migrated.
 
 ## License
 

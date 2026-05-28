@@ -17,6 +17,7 @@ from untamed_companion.providers.fake import (
     FakeLLMProvider,
     FakeWeatherProvider,
 )
+from untamed_companion.store.base import CompanionStore
 
 
 @dataclass(slots=True)
@@ -29,6 +30,7 @@ class GraphRuntime:
     emotion_analyzer: EmotionAnalyzer | None = None
     embedding_provider: EmbeddingProvider | None = None
     weather_provider: WeatherProvider | None = None
+    companion_store: CompanionStore | None = None
 
     def resolve_chat_responder(self) -> ChatResponder:
         return self.chat_responder or self.llm_provider or FakeLLMProvider()
@@ -44,3 +46,6 @@ class GraphRuntime:
 
     def resolve_weather_provider(self) -> WeatherProvider:
         return self.weather_provider or FakeWeatherProvider()
+
+    def resolve_companion_store(self) -> CompanionStore | None:
+        return self.companion_store

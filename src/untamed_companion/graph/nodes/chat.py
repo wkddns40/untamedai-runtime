@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import re
+from typing import cast
 
 from untamed_companion.graph.events import CompanionEvent, event
 from untamed_companion.graph.runtime import GraphRuntime
 from untamed_companion.graph.state import ChatState
+from untamed_companion.store.base import CompanionRecord
 
 _NONE_INTENT = {"intent": "none", "name": None}
 _COFFEE_TEXT = "I could use a warm cup of coffee."
@@ -49,10 +51,15 @@ def _companion_named(companion: dict[str, object]) -> bool:
     return bool(name and name != "???")
 
 
-async def load_session(state: ChatState, _runtime: GraphRuntime) -> dict[str, object]:
+async def load_session(state: ChatState, runtime: GraphRuntime) -> dict[str, object]:
     """Normalize defaults at graph entry."""
 
+    companion_id = state.get("companion_id", "")
     companion = dict(state.get("companion") or {})
+    store = runtime.resolve_companion_store()
+    if not companion and store is not None and companion_id:
+        stored = await store.get_companion(companion_id)
+        companion = dict(stored or {})
     companion.setdefault("name", "???")
     phase = state.get("naming_phase")
     prompted = bool(state.get("naming_prompted", False))
@@ -63,6 +70,7 @@ async def load_session(state: ChatState, _runtime: GraphRuntime) -> dict[str, ob
         phase = "awaiting_response" if prompted else "unnamed_idle"
     return {
         "companion": companion,
+        "user_name": state.get("user_name") or str(companion.get("user_name") or ""),
         "user_lang": state.get("user_lang", "en"),
         "user_tier": state.get("user_tier", "FREE"),
         "msg_type": state.get("msg_type", "chat"),
@@ -135,14 +143,21 @@ async def detect_naming_intent(
     return {"naming_intent": dict(_NONE_INTENT)}
 
 
-async def apply_ai_name(state: ChatState, _runtime: GraphRuntime) -> dict[str, object]:
+async def apply_ai_name(state: ChatState, runtime: GraphRuntime) -> dict[str, object]:
     """Apply user-provided companion name."""
 
     name = _clean_name((state.get("naming_intent") or {}).get("name"))
     if not name:
         return {}
+    companion_id = state.get("companion_id", "")
     companion = dict(state.get("companion") or {})
     companion["name"] = name
+    store = runtime.resolve_companion_store()
+    if store is not None and companion_id:
+        await store.put_companion(
+            companion_id,
+            cast(CompanionRecord, {"name": name}),
+        )
     confirmation = f"You can call me {name}."
     return {
         "companion": companion,
@@ -157,13 +172,20 @@ async def apply_ai_name(state: ChatState, _runtime: GraphRuntime) -> dict[str, o
 
 
 async def apply_user_name(
-    state: ChatState, _runtime: GraphRuntime
+    state: ChatState, runtime: GraphRuntime
 ) -> dict[str, object]:
     """Persist user display name in state."""
 
     name = _clean_name((state.get("naming_intent") or {}).get("name"))
     if not name or state.get("user_name"):
         return {}
+    companion_id = state.get("companion_id", "")
+    store = runtime.resolve_companion_store()
+    if store is not None and companion_id:
+        await store.put_companion(
+            companion_id,
+            cast(CompanionRecord, {"user_name": name}),
+        )
     return {"user_name": name, "emit": [event("user_name_set", name)]}
 
 
@@ -177,10 +199,37 @@ async def retrieve_memory(
         location="Seoul",
         lang=lang,
     )
+    store = runtime.resolve_companion_store()
+    if store is None:
+        return {
+            "semantic_logs": [],
+            "recent_logs": [],
+            "emotions": [],
+            "weather_info": weather_info,
+        }
+
+    companion_id = state.get("companion_id", "")
+    if not companion_id:
+        return {
+            "semantic_logs": [],
+            "recent_logs": [],
+            "emotions": [],
+            "weather_info": weather_info,
+        }
+
+    message = state.get("last_user_message", "")
+    embedding = await runtime.resolve_embedding_provider().embed_text(message)
+    semantic_logs = await store.search_chat(
+        companion_id,
+        query_embedding=embedding,
+        limit=8,
+    )
+    recent_logs = await store.get_recent_chat(companion_id, limit=6)
+    emotions = await store.get_emotions(companion_id, limit=3)
     return {
-        "semantic_logs": [],
-        "recent_logs": [],
-        "emotions": [],
+        "semantic_logs": semantic_logs,
+        "recent_logs": recent_logs,
+        "emotions": emotions,
         "weather_info": weather_info,
     }
 
@@ -212,10 +261,36 @@ async def generate_response(
 
 
 async def persist_messages(
-    _state: ChatState, _runtime: GraphRuntime
+    state: ChatState, runtime: GraphRuntime
 ) -> dict[str, object]:
-    """Placeholder persistence node."""
+    """Persist current user/AI turn when a companion store is configured."""
 
+    store = runtime.resolve_companion_store()
+    companion_id = state.get("companion_id", "")
+    if store is None or not companion_id:
+        return {}
+
+    user_message = state.get("last_user_message", "")
+    if user_message:
+        user_embedding = await runtime.resolve_embedding_provider().embed_text(
+            user_message
+        )
+        await store.add_chat_log(
+            companion_id,
+            sender="USER",
+            message=user_message,
+            embedding=user_embedding,
+        )
+
+    ai_text = state.get("pending_ai_text", "")
+    if ai_text:
+        ai_embedding = await runtime.resolve_embedding_provider().embed_text(ai_text)
+        await store.add_chat_log(
+            companion_id,
+            sender="AI",
+            message=ai_text,
+            embedding=ai_embedding,
+        )
     return {}
 
 
