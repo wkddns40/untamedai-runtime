@@ -31,6 +31,12 @@ cd untamedai-runtime
 pip install -e ".[fastapi,dev]"
 ```
 
+Verify the source checkout:
+
+```bash
+python -m pytest
+```
+
 From PyPI:
 
 ```bash
@@ -46,31 +52,32 @@ pip install "untamedai-runtime[supabase]"
 pip install "untamedai-runtime[postgres]"
 ```
 
-Verify:
-
-```bash
-python -m pytest
-```
-
 ## Quickstart
 
 ```python
+import asyncio
+
 from untamed_companion.graph import GraphRuntime, build_chat_graph
 from untamed_companion.providers import FakeLLMProvider
 
-runtime = GraphRuntime(llm_provider=FakeLLMProvider())
-graph = build_chat_graph(runtime=runtime)
 
-result = await graph.ainvoke(
-    {
-        "companion_id": "demo",
-        "last_user_message": "your name is Luna",
-        "user_lang": "en",
-        "companion": {"name": "???"},
-    }
-)
+async def main() -> None:
+    runtime = GraphRuntime(llm_provider=FakeLLMProvider())
+    graph = build_chat_graph(runtime=runtime)
 
-print(result["emit"])
+    result = await graph.ainvoke(
+        {
+            "companion_id": "demo",
+            "last_user_message": "your name is Luna",
+            "user_lang": "en",
+            "companion": {"name": "???"},
+        }
+    )
+
+    print(result["emit"])
+
+
+asyncio.run(main())
 ```
 
 ## FastAPI
